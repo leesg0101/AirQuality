@@ -5,10 +5,13 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,6 +19,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.sg0101.app.airquality.databinding.ActivityMainBinding
+import java.io.IOException
+import java.util.*
+
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,12 +35,16 @@ class MainActivity : AppCompatActivity() {
     lateinit var getGPSPermissionLauncher: ActivityResultLauncher<Intent>
     lateinit var binding: ActivityMainBinding
 
+    // 위도와 경도를 가져올 때 필요
+    lateinit var locationProvider: LocationProvider
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         checkAllPermissions()
+        updateUI()
     }
 
     override fun onRequestPermissionsResult(
@@ -53,7 +64,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (checkResult) {
-
+                // 위치 값을 가져올 수 있음
+                updateUI()
             } else {
                 Toast.makeText(this, "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요", Toast.LENGTH_LONG)
                     .show()
@@ -122,5 +134,56 @@ class MainActivity : AppCompatActivity() {
 
         return (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+    }
+
+    private fun updateUI() {
+        locationProvider = LocationProvider(this)
+
+        // 위도와 경도 정보를 가져온다.
+        val latitude: Double = locationProvider.getLocationLatitude()
+        val longitude: Double = locationProvider.getLocationLongitude()
+
+        Log.d(TAG, "latitude : $latitude , longitude : $longitude")
+
+        if (latitude != 0.0 || longitude != 0.0) {
+
+            // 1. 현재 위치를 가져오고 UI 업데이트
+            // 현재 위치를 가져오기
+            val address = getCurrentAddress(latitude, longitude)
+            // 주소가 null 이 아닐 경우 UI 업데이트
+            address?.let {
+                binding.tvLocationTitle.text = "${it.thoroughfare}"
+                binding.tvLocationSubtitle.text = "${it.countryName} ${it.adminArea}"
+            }
+            // 2. 현재 미세먼지 농도 가져오고 UI 업데이트
+        } else {
+            Toast.makeText(this, "위도, 경도 정보를 가져올 수 없었습니다. 새로고침을 눌러주세요.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun getCurrentAddress(latitude: Double, longitude: Double): Address? {
+
+        val geocoder = Geocoder(this, Locale.getDefault())
+        // Address 객체는 주소와 관련된 여러 정보를 가지고 있다.
+        // android.location.Address 패키지 참고.
+
+        val addresses: List<Address>? = try {
+            // Geocoder 객체를 이용하여 위도와 경도로부터 리스트를 가져온다.
+            geocoder.getFromLocation(latitude, longitude, 7)
+        } catch (ioException: IOException) {
+            Toast.makeText(this, "지오코더 서비스 사용불가합니다.", Toast.LENGTH_LONG).show()
+            return null
+        } catch (illegalArgumentException: IllegalArgumentException) {
+            Toast.makeText(this, "잘못된 위도, 경도 입니다.", Toast.LENGTH_LONG).show()
+            return null
+        }
+
+        // 에러는 아니지만 주소가 발견되지 않은 경우
+        if (addresses == null || addresses.isEmpty()) {
+            Toast.makeText(this, "주소가 발견되지 않았습니다.", Toast.LENGTH_LONG).show()
+            return null
+        }
+
+        return addresses[0]
     }
 }
