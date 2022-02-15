@@ -20,6 +20,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
 import com.sg0101.app.airquality.databinding.ActivityMainBinding
 import com.sg0101.app.airquality.retrofit.AirQualityResponse
 import com.sg0101.app.airquality.retrofit.AirQualityService
@@ -75,6 +79,7 @@ class MainActivity : AppCompatActivity() {
         updateUI()
         setRefreshButton()
         setFab()
+        setBannerAds()
     }
 
     override fun onRequestPermissionsResult(
@@ -298,6 +303,30 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("currentLat", latitude)
             intent.putExtra("currentLng", longitude)
             startMapActivityResult.launch(intent)
+        }
+    }
+
+    private fun setBannerAds() {
+        MobileAds.initialize(this)
+        val adRequest = AdRequest.Builder().build()
+        binding.adView.loadAd(adRequest)
+
+        binding.adView.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                Log.d("ads log", "배너 광고가 로드되었습니다.")
+            }
+
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                Log.d("ads log", "배너 광고가 로드 실패했습니다. ${adError.responseInfo}")
+            }
+
+            override fun onAdClicked() {
+                Log.d("ads log", "배너 광고를 클릭했습니다.")
+            }
+
+            override fun onAdClosed() {
+                Log.d("ads log", "배너 광고를 닫았습니다.")
+            }
         }
     }
 }
