@@ -39,10 +39,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:letterSpacing="-0.05"
+        android:text="역삼1동"
         android:textColor="#000000"
         android:textSize="32sp"
         android:textStyle="bold"
-        android:text="역삼1동"
         app:layout_constraintStart_toStartOf="@+id/guideline1"
         app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
@@ -51,17 +51,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:letterSpacing="-0.05"
+        android:text="대한민국 서울특별시"
         android:textColor="#000000"
         android:textSize="16sp"
-        android:text="대한민국 서울특별시"
         app:layout_constraintStart_toStartOf="@+id/guideline1"
         app:layout_constraintTop_toBottomOf="@+id/tv_location_title" />
 
     <ImageView
         android:layout_width="10dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_thunder"
         android:layout_marginStart="9dp"
+        android:src="@drawable/icon_thunder"
         app:layout_constraintBottom_toBottomOf="@id/tv_location_title"
         app:layout_constraintStart_toEndOf="@id/tv_location_title"
         app:layout_constraintTop_toTopOf="@id/tv_location_title" />
@@ -71,11 +71,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/bg_soso"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintEnd_toEndOf="@id/guideline3"
         app:layout_constraintStart_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintVertical_bias="0.4" />
 
     <TextView
@@ -83,10 +83,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:letterSpacing="0.05"
+        android:text="61"
         android:textColor="#4c4c4c"
         android:textSize="32sp"
         android:textStyle="bold"
-        android:text="61"
         app:layout_constraintBottom_toBottomOf="@id/img_bg"
         app:layout_constraintEnd_toEndOf="@id/img_bg"
         app:layout_constraintStart_toStartOf="@id/img_bg"
@@ -97,9 +97,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:letterSpacing="-0.05"
+        android:text="보통"
         android:textColor="#999999"
         android:textSize="14sp"
-        android:text="보통"
         app:layout_constraintEnd_toEndOf="@id/img_bg"
         app:layout_constraintStart_toStartOf="@id/img_bg"
         app:layout_constraintTop_toBottomOf="@id/tv_count" />
@@ -108,11 +108,11 @@
         android:id="@+id/check_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:letterSpacing="-0.05"
+        android:text="측정 시간"
         android:textColor="#999999"
         android:textSize="13sp"
-        android:text="측정 시간"
-        android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img_bg" />
@@ -122,9 +122,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:letterSpacing="-0.05"
+        android:text="2021-08-29 13:00"
         android:textColor="#999999"
         android:textSize="13sp"
-        android:text="2021-08-29 13:00"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/check_time" />
@@ -133,11 +133,24 @@
         android:id="@+id/btn_refresh"
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:src="@drawable/icon_refresh"
-        android:padding="5dp"
         android:layout_marginTop="20dp"
+        android:padding="5dp"
+        android:src="@drawable/icon_refresh"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_check_time" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="30dp"
+        android:backgroundTint="@color/orange"
+        android:src="@drawable/icon_map"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
