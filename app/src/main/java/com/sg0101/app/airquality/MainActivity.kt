@@ -13,6 +13,8 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -42,11 +44,27 @@ class MainActivity : AppCompatActivity() {
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
 
+    // 위도와 경도를 저장
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
+
     lateinit var getGPSPermissionLauncher: ActivityResultLauncher<Intent>
     lateinit var binding: ActivityMainBinding
 
     // 위도와 경도를 가져올 때 필요
     lateinit var locationProvider: LocationProvider
+
+    val startMapActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult(),
+            object : ActivityResultCallback<ActivityResult?> {
+                override fun onActivityResult(result: ActivityResult?) {
+                    if (result?.resultCode ?: 0 == Activity.RESULT_OK) {
+                        latitude = result?.data?.getDoubleExtra("latitude", 0.0) ?: 0.0
+                        longitude = result?.data?.getDoubleExtra("longitude", 0.0) ?: 0.0
+                        updateUI()
+                    }
+                }
+            })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         checkAllPermissions()
         updateUI()
         setRefreshButton()
+        setFab()
     }
 
     override fun onRequestPermissionsResult(
@@ -151,8 +170,10 @@ class MainActivity : AppCompatActivity() {
         locationProvider = LocationProvider(this)
 
         // 위도와 경도 정보를 가져온다.
-        val latitude: Double = locationProvider.getLocationLatitude()
-        val longitude: Double = locationProvider.getLocationLongitude()
+        if (latitude == 0.0 || longitude == 0.0) {
+            latitude = locationProvider.getLocationLatitude()
+            longitude = locationProvider.getLocationLongitude()
+        }
 
         Log.d(TAG, "latitude : $latitude , longitude : $longitude")
 
@@ -241,7 +262,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.tvCheckTime.text = dateTime.format(dateFormatter).toString()
 
-        when(pollutionData.aqius) {
+        when (pollutionData.aqius) {
             in 0..50 -> {
                 binding.tvTitle.text = "좋음"
                 binding.imgBg.setImageResource(R.drawable.bg_good)
@@ -268,6 +289,15 @@ class MainActivity : AppCompatActivity() {
     private fun setRefreshButton() {
         binding.btnRefresh.setOnClickListener {
             updateUI()
+        }
+    }
+
+    private fun setFab() {
+        binding.fab.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("currentLat", latitude)
+            intent.putExtra("currentLng", longitude)
+            startMapActivityResult.launch(intent)
         }
     }
 }
