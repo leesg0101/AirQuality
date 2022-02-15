@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/leesg/AndroidStudioProjects/AirQuality/app/src/main/res/layout/activity_main.xml" value="0.5494791666666666" />
+        <entry key="..\:/Users/leesg/AndroidStudioProjects/AirQuality/app/src/main/res/drawable/bg_button_orange.xml" value="0.4505" />
+        <entry key="..\:/Users/leesg/AndroidStudioProjects/AirQuality/app/src/main/res/layout/activity_main.xml" value="0.5" />
+        <entry key="..\:/Users/leesg/AndroidStudioProjects/AirQuality/app/src/main/res/layout/activity_map.xml" value="0.5494791666666666" />
       </map>
     </option>
   </component>
